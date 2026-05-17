@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premier Cool 3D Experience</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: auto;
+        }
+        .flash-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 182, 212, 0.4);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            transition: opacity 0.1s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white font-sans overflow-x-hidden">
+
+    <div id="blast-flash" class="flash-overlay"></div>
+
+    <header class="fixed top-0 left-0 w-full bg-slate-950/40 backdrop-blur-md border-b border-blue-900/30 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-black tracking-widest text-blue-400">
+                PREMIER <span class="text-cyan-400">COOL</span>
+            </a>
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
+                Hyper-Chill 3D Ecosystem
+            </span>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center px-6 border-b border-blue-950">
+        <div id="canvas-container"></div>
+
+        <div class="max-w-7xl w-full mx-auto grid md:grid-cols-2 pointer-events-none relative z-20">
+            <div class="space-y-6 pt-24 md:pt-0 flex flex-col justify-center items-start">
+                <div class="bg-cyan-500/10 text-cyan-400 text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-full border border-cyan-500/20">
+                    ❄️ Menthol Intense Sensation
+                </div>
+                <h1 class="text-4xl md:text-7xl font-black leading-none tracking-tight">
+                    Stay Fresh. <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Hold The Chill.</span>
+                </h1>
+                <p class="text-xs md:text-sm text-slate-400 max-w-sm font-normal leading-relaxed">
+                    Tap and drag the 3D bar to inspect the authentic geometric build, premium glossy glaze, and icy ergonomic contours.
+                </p>
+                <div class="pt-2 flex gap-4 pointer-events-auto">
+                    <button onclick="triggerIceBlast()" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-xs font-bold px-6 py-4 rounded-xl hover:from-blue-500 hover:to-cyan-400 transition transform active:scale-95 shadow-lg shadow-cyan-500/20 cursor-pointer">
+                        Trigger Ice Blast
+                    </button>
+                    <a href="#matrix" class="border border-slate-800 bg-slate-900/40 text-slate-300 text-xs font-bold px-6 py-4 rounded-xl hover:bg-slate-900 transition flex items-center">
+                        Explore Benefits ↓
+                    </a>
+                </div>
+            </div>
+            <div class="hidden md:block"></div>
+        </div>
+    </section>
+
+    <section id="matrix" class="py-24 bg-gradient-to-b from-slate-950 to-slate-900 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-xl mb-16">
+                <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest block mb-2">Scientific Optimization</span>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tight">The Anti-Heat Matrix</h2>
+                <p class="text-slate-400 text-xs md:text-sm mt-2">Engineered with high-potency ingredients to combat sweat, odor, and fatigue instantly.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-900/60 border border-blue-950 p-8 rounded-3xl relative overflow-hidden group hover:border-cyan-500/30 transition duration-300">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl group-hover:bg-blue-600/20 transition"></div>
+                    <span class="text-3xl block mb-4">🛡️</span>
+                    <h3 class="text-lg font-black text-white mb-2">24-Hour Odor Defense</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Advanced active zinc defense molecules bond seamlessly with skin metrics to eliminate bacteria pathways before odor can initiate.</p>
+                </div>
+
+                <div class="bg-slate-900/60 border border-blue-950 p-8 rounded-3xl relative overflow-hidden group hover:border-cyan-500/30 transition duration-300">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyan-600/10 rounded-full blur-2xl group-hover:bg-cyan-600/20 transition"></div>
+                    <span class="text-3xl block mb-4">🧪</span>
+                    <h3 class="text-lg font-black text-white mb-2">Cryo-Menthol Blast</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Formulated with pure crystalized menthol elements that unlock an instant drop in perceived skin temperature upon lather surface contact.</p>
+                </div>
+
+                <div class="bg-slate-900/60 border border-blue-950 p-8 rounded-3xl relative overflow-hidden group hover:border-cyan-500/30 transition duration-300">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-600/10 rounded-full blur-2xl group-hover:bg-emerald-600/20 transition"></div>
+                    <span class="text-3xl block mb-4">💧</span>
+                    <h3 class="text-lg font-black text-white mb-2">Deep Derm Hydration</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Unlike basic industrial soaps that strip your skin dry, our lipid-retaining parameters seal moisture deeply inside the outer epidermal layers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-blue-950 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.15),transparent)]"></div>
+        <div class="max-w-3xl mx-auto px-6 relative z-10 space-y-4">
+            <h3 class="text-2xl md:text-4xl font-black tracking-tight">Ready to Upgrade Your Morning Routine?</h3>
+            <p class="text-slate-300 text-xs md:text-sm max-w-md mx-auto">Experience the ultimate icy freshness that keeps you sharp, focused, and completely dynamic all day long.</p>
+            <div class="pt-2">
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="bg-white text-blue-950 text-xs font-bold px-6 py-3 rounded-xl hover:bg-slate-100 transition cursor-pointer">Back to 3D Inspection</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 border-t border-slate-900 py-12 px-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto space-y-4">
+            <p class="font-bold tracking-widest text-slate-400">PREMIER COOL EXPERIMENTAL LABORATORY</p>
+            <p>© 2026 Crafted entirely on mobile via Three.js WebGL systems. Brand designs property of respective trademark holders.</p>
+        </div>
+    </footer>
+
+    <script>
+        let scene, camera, renderer, soap, controls;
+        let bubbleParticles = [];
+        let leafParticles = [];
+        const container = document.getElementById('canvas-container');
+
+        function init3D() {
+            // 1. Scene setup
+            scene = new THREE.Scene();
+
+            // 2. Camera setup
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            if (window.innerWidth > 768) {
+                camera.position.set(1.4, 0, 4.2);
+            } else {
+                camera.position.set(0, 0, 4.8);
+            }
+
+            // 3. Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // 4. Orbit Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false;
+
+            // 5. CUSTOM SOAP TEXTURE CREATION (Generates the "PREMIER COOL" logo dynamically via code)
+            const textCanvas = document.createElement('canvas');
+            textCanvas.width = 512;
+            textCanvas.height = 256;
+            const ctx = textCanvas.getContext('2d');
+            
+            // Fill background color matching the soap base
+            ctx.fillStyle = '#0052cc';
+            ctx.fillRect(0, 0, 512, 256);
+            
+            // Draw an authentic structural indentation ring line
+            ctx.strokeStyle = '#0040a3';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(40, 30, 432, 196);
+            
+            // Add Logo Text typography parameters
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 44px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('PREMIER COOL', 256, 140);
+            
+            const soapTexture = new THREE.CanvasTexture(textCanvas);
+
+            // 6. Build the 3D Soap Bar
+            const geometry = new THREE.BoxGeometry(1.8, 1.1, 0.5);
+            const material = new THREE.MeshStandardMaterial({
+                map: soapTexture,
+                roughness: 0.18,
+                metalness: 0.15,
+                flatShading: false
+            });
+
+            soap = new THREE.Mesh(geometry, material);
+            scene.add(soap);
+
+            // 7. MULTIPLIED BUBBLE SYSTEM SETUP
+            const bubbleGeometry = new THREE.SphereGeometry(0.04, 8, 8);
+            const bubbleMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.0,
+                metalness: 0.9,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            for (let i = 0; i < 40; i++) {
+                const bubbleMesh = new THREE.Mesh(bubbleGeometry, bubbleMaterial);
+                // Scatter them randomly in a cube grid around the soap area
+                bubbleMesh.position.set(
+                    (Math.random() - 0.5) * 4,
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 3
+                );
+                // Assign a custom vertical velocity parameter
+                bubbleMesh.userData = { speed: 0.005 + Math.random() * 0.01 };
+                scene.add(bubbleMesh);
+                bubbleParticles.push(bubbleMesh);
+            }
+
+            // 8. MENTHOL MINT LEAF PARTICLES
+            const leafGeometry = new THREE.ConeGeometry(0.05, 0.15, 4);
+            const leafMaterial = new THREE.MeshStandardMaterial({
+                color: 0x00ffcc, // Glowing Mint Green
+                roughness: 0.3,
+                flatShading: true
+            });
+
+            for (let i = 0; i < 25; i++) {
+                const leafMesh = new THREE.Mesh(leafGeometry, leafMaterial);
+                leafMesh.position.set(
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 4
+                );
+                leafMesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+                leafMesh.userData = { 
+                    rotSpeedX: Math.random() * 0.02,
+                    rotSpeedY: Math.random() * 0.02,
+                    orbitRadius: 1 + Math.random() * 2,
+                    angle: Math.random() * Math.PI * 2,
+                    speed: 0.01 + Math.random() * 0.01
+                };
+                scene.add(leafMesh);
+                leafParticles.push(leafMesh);
+            }
+
+            // 9. Studio Environmental Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const dirLight1 = new THREE.DirectionalLight(0x00ffff, 1.6);
+            dirLight1.position.set(5, 5, 4);
+            scene.add(dirLight1);
+
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.2);
+            dirLight2.position.set(-5, -2, -2);
+            scene.add(dirLight2);
+
+            // Start loop
+            animate();
+        }
+
+        // 60-FPS Animation Update Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Idle Base Soap Rotation
+            soap.rotation.y += 0.003;
+            soap.rotation.x += 0.001;
+
+            // Animate Bubbles drifting upwards gently
+            bubbleParticles.forEach(b => {
+                b.position.y += b.userData.speed;
+                // If bubble exits top threshold view bounds, reset back to bottom boundary loop
+                if (b.position.y > 2.5) {
+                    b.position.y = -2.5;
+                    b.position.x = (Math.random() - 0.5) * 4;
+                }
+            });
+
+            // Animate Mint Leaf orbits swirling around the soap mesh space
+            leafParticles.forEach(l => {
+                l.userData.angle += l.userData.speed;
+                l.position.x = Math.cos(l.userData.angle) * l.userData.orbitRadius;
+                l.position.z = Math.sin(l.userData.angle) * l.userData.orbitRadius;
+                l.rotation.x += l.userData.rotSpeedX;
+                l.rotation.y += l.userData.rotSpeedY;
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Interactive Flash Burst Trigger Function
+        function triggerIceBlast() {
+            // Screen Flash Animation Engine
+            const flash = document.getElementById('blast-flash');
+            flash.style.opacity = '1';
+            setTimeout(() => { flash.style.opacity = '0'; }, 200);
+
+            // Hyper-speed 3D Soap Spin via GSAP
+            gsap.to(soap.rotation, { 
+                y: soap.rotation.y + Math.PI * 4, 
+                x: soap.rotation.x + Math.PI * 2,
+                duration: 1.2, 
+                ease: "power3.out" 
+            });
+
+            // Blow all bubbles up rapidly temporarily
+            bubbleParticles.forEach(b => {
+                b.position.y += 1.5;
+            });
+        }
+
+        // Window Resizing Response Layout adjustments
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            if (window.innerWidth > 768) {
+                camera.position.set(1.4, 0, 4.2);
+            } else {
+                camera.position.set(0, 0, 4.8);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', init3D);
+    </script>
+</body>
+</html>
