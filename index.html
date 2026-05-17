@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premier Cool 3D Experience</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        /* Keep the 3D canvas underneath our text but visible */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: auto; /* Allows dragging the soap */
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white font-sans overflow-x-hidden">
+
+    <header class="fixed top-0 left-0 w-full bg-slate-950/40 backdrop-blur-md border-b border-blue-900/30 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-black tracking-widest text-blue-400">
+                PREMIER <span class="text-cyan-400">COOL</span>
+            </a>
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
+                3D Interactive Lab
+            </span>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center px-6">
+        <div id="canvas-container"></div>
+
+        <div class="max-w-7xl w-full mx-auto grid md:grid-cols-2 pointer-events-none relative z-20">
+            <div class="space-y-6 pt-20 md:pt-0 flex flex-col justify-center items-start">
+                <div class="bg-cyan-500/10 text-cyan-400 text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-full border border-cyan-500/20">
+                    ❄️ Menthol Intense Sensation
+                </div>
+                <h1 class="text-4xl md:text-7xl font-black leading-none tracking-tight">
+                    Stay Fresh. <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Hold The Chill.</span>
+                </h1>
+                <p class="text-xs md:text-sm text-slate-400 max-w-sm font-normal leading-relaxed">
+                    Tap and drag the 3D bar to inspect the authentic geometric build, premium glossy glaze, and icy ergonomic contours.
+                </p>
+                <div class="pt-2 flex gap-4 pointer-events-auto">
+                    <button onclick="triggerIceBlast()" class="bg-blue-600 text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-blue-500 transition shadow-lg shadow-blue-600/30 cursor-pointer">
+                        Trigger Ice Blast
+                    </button>
+                </div>
+            </div>
+
+            <div class="hidden md:block"></div>
+        </div>
+    </section>
+
+    <script>
+        let scene, camera, renderer, soap, controls;
+        const container = document.getElementById('canvas-container');
+
+        function init3D() {
+            // 1. Create the Scene (The 3D World)
+            scene = new THREE.Scene();
+
+            // 2. Setup the Camera (Field of view, aspect ratio, near/far view boundaries)
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            // Position the camera slightly right so the soap sits perfectly on screen
+            if (window.innerWidth > 768) {
+                camera.position.set(1.5, 0, 4.5);
+            } else {
+                camera.position.set(0, 0, 5); // Center it for mobile screens
+            }
+
+            // 3. Setup the WebGL Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // High-def sharp rendering
+            container.appendChild(renderer.domElement);
+
+            // 4. Interactive Touch/Mouse Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Adds smooth gliding friction when spinning
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false; // Prevents accidental zooming on mobile scrolls
+
+            // 5. Build the 3D Soap Bar (Using a Box with thickness dimensions)
+            // width: 1.8, height: 1.1, depth: 0.5
+            const geometry = new THREE.BoxGeometry(1.8, 1.1, 0.5);
+            
+            // 6. Apply Premium Glossy Soap Material (Premier Cool Blue Hex Code)
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x0052cc,       // Rich Premier Blue
+                roughness: 0.15,       // Low roughness = premium shiny wet look
+                metalness: 0.1,        // Adds a tight, clean sheen reflection
+                flatShading: false     // Keeps the edges looking smooth
+            });
+
+            soap = new THREE.Mesh(geometry, material);
+            scene.add(soap);
+
+            // 7. Elite Studio Lighting Environment
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Soft fill light
+            scene.add(ambientLight);
+
+            // Main sharp highlight light from top left
+            const dirLight1 = new THREE.DirectionalLight(0x00ffff, 1.5); // Cyan tint light
+            dirLight1.position.set(5, 5, 4);
+            scene.add(dirLight1);
+
+            // Backrim glow light so the soap pops out from the dark background
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.2); 
+            dirLight2.position.set(-5, -2, -2);
+            scene.add(dirLight2);
+
+            // 8. Start the continuous Rendering Loop
+            animate();
+        }
+
+        // Animation Loop (Runs 60 times per second)
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Idle floating/rotation animation when user isn't interacting
+            soap.rotation.y += 0.004;
+            soap.rotation.x += 0.002;
+
+            // Update the friction controls
+            controls.update();
+
+            // Render the updated scene frame
+            renderer.render(scene, camera);
+        }
+
+        // Fun Action Hook: Flash the lights bright blue when clicking the button
+        function triggerIceBlast() {
+            // Instantly make the soap rotate rapidly for a split second
+            gsap.to(soap.rotation, { y: soap.rotation.y + Math.PI * 2, duration: 1, ease: "power2.out" });
+        }
+
+        // Handle Screen Resizing dynamically (Crucial for rotation adjustments between portrait/landscape)
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            
+            if (window.innerWidth > 768) {
+                camera.position.set(1.5, 0, 4.5);
+            } else {
+                camera.position.set(0, 0, 5);
+            }
+        });
+
+        // Initialize the 3D environment on load
+        window.addEventListener('DOMContentLoaded', init3D);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</body>
+</html>
